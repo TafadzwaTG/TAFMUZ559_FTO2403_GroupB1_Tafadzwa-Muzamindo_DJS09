@@ -1,7 +1,7 @@
-import { showReviewTotal, populateUser, showDetails, getTopTwoReviews} from './utils'
-import { Permissions , LoyaltyUser } from './enums'
-import { Review, Property } from './interfaces'
-import MainProperty from './classes' 
+import { showReviewTotal, populateUser, showDetails, getTopTwoReviews} from './utils/utils'
+import { Permissions , LoyaltyUser } from './types/enums'
+import { Review, Property } from './types/interfaces'
+import MainProperty from './types/classes' 
 
 const propertyContainer = document.querySelector('.properties')
 const reviewContainer = document.querySelector('.reviews') as HTMLElement
@@ -63,7 +63,7 @@ const properties : Property[] = [
         isAvailable: true  
     },
     {
-        image: 'images/poland-property.jpg',
+        image: 'src/assets/images/poland-property.jpg',
         title: 'Polish Cottage',
         price: 30,
         location: {
@@ -76,7 +76,7 @@ const properties : Property[] = [
         isAvailable: false 
     },
     {
-        image: 'images/london-property.jpg',
+        image: 'src/assets/images/london-property.jpg',
         title: 'London Flat',
         price: 25,
         location: {
@@ -89,7 +89,7 @@ const properties : Property[] = [
         isAvailable: true
     },
     {
-        image: 'images/malaysian-hotel.jpeg',
+        image: 'src/assets/images/malaysian-hotel.jpeg',
         title: 'Malia Hotel',
         price: 35,
         location: {
@@ -144,7 +144,7 @@ footer.innerHTML = currentLocation[0] + ' ' + currentLocation[1] + ' ' + current
 
 
 let yourMainProperty = new MainProperty(
-    'images/italian-property.jpg', 
+    'src/assets/images/italian-property.jpg', 
     'Italian House',
     [{
         name: 'Olive',
