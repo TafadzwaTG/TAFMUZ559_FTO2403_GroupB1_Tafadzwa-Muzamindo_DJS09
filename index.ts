@@ -1,20 +1,25 @@
+import { showReviewTotal, populateUser, showDetails, getTopTwoReviews} from './utils'
+import { Permissions , LoyaltyUser } from './enums'
+import { Review, Property } from './interfaces'
+import MainProperty from './classes' 
 
-import { showReviewTotal, populateUser } from './utils'
-import { Permissions, LoyaltyUser } from './enums.ts'
 const propertyContainer = document.querySelector('.properties')
+const reviewContainer = document.querySelector('.reviews') as HTMLElement
+const container = document.querySelector('.container') as HTMLElement
+const button = document.querySelector('button') as HTMLElement
 const footer = document.querySelector('.footer')
+const mainImageContainer = document.querySelector('.main-image')
 
-let isOpen: boolean
+if (!propertyContainer || !reviewContainer || !container || !button || !footer || !mainImageContainer) {
+    throw new Error('One or more required elements not found in the DOM.');
+}
+
+let isLoggedIn: boolean
 
 // Reviews
-const reviews : { 
-    name: string; 
-    stars: number; 
-    loyaltyUser: LoyaltyUser; 
-    date: string
-    }[] = [
+const reviews: Review[] = [
     {
-        name: 'Sheia',
+        name: 'Sheila',
         stars: 5,
         loyaltyUser: LoyaltyUser.GOLD_USER,
         date: '01-04-2021'
@@ -29,13 +34,13 @@ const reviews : {
         name: 'Omar',
         stars: 4,
         loyaltyUser: LoyaltyUser.SILVER_USER,
-        date: '27-03-2021'
+        date: '27-03-2021',
     },
 ]
 
 const you = {
-    firstName: 'Bobby',
-    lastName: 'Brown',
+    firstName: 'McNorman',
+    lastName: 'Muzamindo',
     permissions: Permissions.ADMIN,
     isReturning: true,
     age: 35,
@@ -43,19 +48,7 @@ const you = {
 }
 
 // Array of Properties
-const properties : {
-    image: string;
-    title: string;
-    price: number;
-    location: {
-        firstLine: string;
-        city: string;
-        code: number;
-        country: string;
-    };
-    contact: [ number, string ];
-    isAvailable: boolean;
-}[] = [
+const properties : Property[] = [
     {
         image: 'images/colombia-property.jpg',
         title: 'Colombian Shack',
@@ -72,7 +65,7 @@ const properties : {
     {
         image: 'images/poland-property.jpg',
         title: 'Polish Cottage',
-        price: 34,
+        price: 30,
         location: {
             firstLine: 'no 23',
             city: 'Gdansk',
@@ -85,7 +78,7 @@ const properties : {
     {
         image: 'images/london-property.jpg',
         title: 'London Flat',
-        price: 23,
+        price: 25,
         location: {
             firstLine: 'flat 15',
             city: 'London',
@@ -94,6 +87,19 @@ const properties : {
         },
         contact: [+34829374892553, 'andyluger@aol.com'],
         isAvailable: true
+    },
+    {
+        image: 'images/malaysian-hotel.jpeg',
+        title: 'Malia Hotel',
+        price: 35,
+        location: {
+            firstLine: 'Room 4',
+            city: 'Malia',
+            code: 45334,
+            country: 'Malaysia'
+        },
+        contact: [ +60349822083, 'lee34@gmail.com'],
+        isAvailable: false
     }
 ]
 
@@ -101,6 +107,8 @@ const properties : {
 showReviewTotal(reviews.length, reviews[0].name, reviews[0].loyaltyUser)
 
 populateUser(you.isReturning, you.firstName)
+
+console.log(properties.length)
 
 // Add the properties
 for (let i = 0; i < properties.length; i++) {
@@ -110,9 +118,41 @@ for (let i = 0; i < properties.length; i++) {
     const image = document.createElement('img')
     image.setAttribute('src', properties[i].image)
     card.appendChild(image)
+    showDetails(you.permissions, card, properties[i].price)
     propertyContainer.appendChild(card)
 }
 
-let currentLocation : [string, string, number] = ['London', '11.03', 17]
+let count = 0
+function addReviews(array : Review[]) : void {
+    if (!count ) {
+        count++
+        const topTwo = getTopTwoReviews(array)
+        for (let i = 0; i < topTwo.length; i++) {
+            const card = document.createElement('div')
+            card.classList.add('review-card')
+            card.innerHTML = topTwo[i].stars + ' stars from ' + topTwo[i].name
+            reviewContainer.appendChild(card)
+        }
+        container.removeChild(button) 
+    }
+}
+
+button.addEventListener('click', () => addReviews(reviews))
+
+let currentLocation : [string, string, number] = ['Cape Town', '13:23', 15]
 footer.innerHTML = currentLocation[0] + ' ' + currentLocation[1] + ' ' + currentLocation[2] + '°'
 
+
+let yourMainProperty = new MainProperty(
+    'images/italian-property.jpg', 
+    'Italian House',
+    [{
+        name: 'Olive',
+        stars: 5,
+        loyaltyUser: LoyaltyUser.GOLD_USER,
+        date: '12-04-2021'
+    }] )
+
+const image = document.createElement('img')
+image.setAttribute('src', yourMainProperty.src)
+mainImageContainer.appendChild(image)
